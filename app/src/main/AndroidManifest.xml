@@ -9,10 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".HighScoreActivity"></activity>
-        <activity android:name=".GameOverActivity" />
-        <activity android:name=".PlayActivity" />
-        <activity android:name=".MainActivity">
+
+        <activity android:name=".HighScoreActivity" android:screenOrientation="landscape"></activity>
+        <activity android:name=".GameOverActivity" android:screenOrientation="landscape" />
+        <activity android:name=".PlayActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".MainActivity" android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
