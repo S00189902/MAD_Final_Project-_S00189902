@@ -2,23 +2,28 @@ package edu.jmcgrath.s00189902_final_project;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 public class PlayActivity extends AppCompatActivity implements SensorEventListener
 {
 
-    private final double Up_Forward = 9.0;
-    private final double Up_Backward = 6.0;
+    private final double fullPos= 5.0;
+    private final double fullNeg = -5.0;
 
     boolean highlimit = false;
-    int counter =0;
 
+
+    View view;
+    int sequenceCount=4,n=0;
+    int[] gamesSequence= new int[120];
     Button btnblue,btnpurple,btngreen,btnred;
     private SensorManager msesnorManager;
     private Sensor mSensor;
@@ -33,6 +38,11 @@ public class PlayActivity extends AppCompatActivity implements SensorEventListen
         btnred = findViewById(R.id.btnRed);
         msesnorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         mSensor = msesnorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+        sequenceCount = getIntent().getIntExtra("sequenceCount",-1);
+        gamesSequence = getIntent().getIntArrayExtra("seqArray");
+
+        view = new View(this);
     }
     protected void onResume()
     {
@@ -45,6 +55,24 @@ public class PlayActivity extends AppCompatActivity implements SensorEventListen
         msesnorManager.unregisterListener(this);
     }
 
+    public void doBlue(View view)
+    {
+        Input(1);
+    }
+
+    public void doPurple(View view)
+    {
+        Input(2);
+    }
+    public void doRed(View view)
+    {
+        Input(3);
+    }
+    public void doGreen(View view)
+    {
+        Input(4);
+    }
+
 
 
     @Override
@@ -54,15 +82,49 @@ public class PlayActivity extends AppCompatActivity implements SensorEventListen
         float y = event.values[1];
         float z = event.values[2];
 
-        if((x > Up_Forward)&&(highlimit==false))
+        if(z>= fullPos && highlimit==false)
+        {
+            highlimit =true;
+            btnblue.setPressed(true);
+            doBlue(view);
+        }
+        else if(z < fullPos)
+        {
+            btnblue.setPressed(false);
+        }
+        if(z <= fullNeg && highlimit==false)
         {
             highlimit = true;
+            btnred.setPressed(true);
+            doRed(view);
         }
-        if((x < Up_Backward)&&(highlimit==true))
+        else if(z > fullNeg)
         {
-            counter++;
-            Toast.makeText(this,"Number = "+x,Toast.LENGTH_SHORT).show();
-            highlimit=false;
+            btnred.setPressed(false);
+        }
+        if(y > fullPos && highlimit == false)
+        {
+            highlimit = true;
+            btnpurple.setPressed(true);
+            doPurple(view);
+        }
+        else if(y < fullPos)
+        {
+            btnpurple.setPressed(false);
+        }
+        if(y <= fullNeg && highlimit == false)
+        {
+            highlimit = true;
+            btngreen.setPressed(true);
+            doGreen(view);
+        }
+        else if(y > fullNeg)
+        {
+            btngreen.setPressed(false);
+        }
+        if(z < fullPos && z > fullNeg && y < fullPos && y > fullNeg )
+        {
+            highlimit = false;
         }
     }
 
@@ -70,13 +132,34 @@ public class PlayActivity extends AppCompatActivity implements SensorEventListen
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
-    public static double round(double value,int places)
+    public void Input(int value)
     {
-        if(places < 0) throw new IllegalArgumentException();
-        long factor = (long) Math.pow(10,places);
-        value = value * factor;
-        long tmp=Math.round(value);
-        return (double)tmp/factor;
+        if(n+1 < sequenceCount)
+        {
+            if(gamesSequence[n]==value)
+            {
+                n++;
+            }
+            else
+            {
+
+            }
+        }
+        else if(n+1 >=sequenceCount)
+        {
+            if(gamesSequence[n]==value)
+            {
+                Intent start = new Intent(view.getContext(),MainActivity.class);
+
+                MainActivity.sequenceCount = sequenceCount+2;
+                startActivity(start);
+                finish();
+            }
+            else
+            {
+
+            }
+        }
     }
 
 }

@@ -14,35 +14,23 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private final int Blue = 1;
-    private final int Red =2;
-    private final int Green=3;
-    private final int Purple=4;
+    private final int Red =3;
+    private final int Green=4;
+    private final int Purple=2;
     View view1;
-
+    Boolean pPressed = false;
 
 
     Button btnBlue,btnRed,btnGreen,btnPurple,btn;
 
-    int sequenceCount=4,n=0;
+   public static int sequenceCount=4,n=0;
 
     int[] gamesSequence= new int[120];
     int arrayIndex=0;
 
 
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        btnBlue = findViewById(R.id.btnBlue);
-        btnGreen =findViewById(R.id.btnGreen);
-        btnPurple = findViewById(R.id.btnPurple);
-        btnRed = findViewById(R.id.btnRed);
-        view1 = new View(this);
-    }
-    CountDownTimer ct = new CountDownTimer(6000,1500) {
+    CountDownTimer ct = new CountDownTimer((1000*sequenceCount)+2500,1500) {
         @Override
         public void onTick(long millisUntilFinished) {
             rndBTN();
@@ -54,10 +42,25 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("game sequence",String.valueOf(gamesSequence[i]));
 
             Intent play = new Intent(view1.getContext(),PlayActivity.class);
+            play.putExtra("sequenceCount",sequenceCount);
+            play.putExtra("seqArray",gamesSequence);
+
             startActivity(play);
 
         }
     };
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        btnBlue = findViewById(R.id.btnBlue);
+        btnGreen =findViewById(R.id.btnGreen);
+        btnPurple = findViewById(R.id.btnPurple);
+        btnRed = findViewById(R.id.btnRed);
+        view1 = new View(this);
+    }
+
 
 
     private int getRandom(int maxValue){return ((int)((Math.random()*maxValue)+1));}
@@ -88,20 +91,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void doPlay(View view)
     {
-        ct.start();
-
-
-
-
-
-
-
-
+        if(!pPressed)
+        {
+            ct.start();
+            pPressed=true;
+        }
 
     }
     private void rndBTN()
     {
-        n = getRandom(sequenceCount);
+        n = getRandom(4);
 
         Toast.makeText(this,"Number = "+n,Toast.LENGTH_SHORT).show();
 
