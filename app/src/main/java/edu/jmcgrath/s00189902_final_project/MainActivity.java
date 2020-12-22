@@ -2,10 +2,12 @@ package edu.jmcgrath.s00189902_final_project;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -15,6 +17,9 @@ public class MainActivity extends AppCompatActivity {
     private final int Red =2;
     private final int Green=3;
     private final int Purple=4;
+    View view1;
+
+
 
     Button btnBlue,btnRed,btnGreen,btnPurple,btn;
 
@@ -23,17 +28,7 @@ public class MainActivity extends AppCompatActivity {
     int[] gamesSequence= new int[120];
     int arrayIndex=0;
 
-    CountDownTimer ct = new CountDownTimer(6000,1500) {
-        @Override
-        public void onTick(long millisUntilFinished) {
-            rndBTN();
-        }
 
-        @Override
-        public void onFinish() {
-
-        }
-    };
 
 
     @Override
@@ -45,7 +40,24 @@ public class MainActivity extends AppCompatActivity {
         btnGreen =findViewById(R.id.btnGreen);
         btnPurple = findViewById(R.id.btnPurple);
         btnRed = findViewById(R.id.btnRed);
+        view1 = new View(this);
     }
+    CountDownTimer ct = new CountDownTimer(6000,1500) {
+        @Override
+        public void onTick(long millisUntilFinished) {
+            rndBTN();
+        }
+
+        @Override
+        public void onFinish() {
+            for(int i =0;i< arrayIndex;i++)
+                Log.d("game sequence",String.valueOf(gamesSequence[i]));
+
+            Intent play = new Intent(view1.getContext(),PlayActivity.class);
+            startActivity(play);
+
+        }
+    };
 
 
     private int getRandom(int maxValue){return ((int)((Math.random()*maxValue)+1));}
@@ -77,22 +89,15 @@ public class MainActivity extends AppCompatActivity {
     public void doPlay(View view)
     {
         ct.start();
-        for(int i=0;i < sequenceCount;i++)
-        {
-            int x =getRandom(sequenceCount);
 
-            Toast.makeText(this,"Number = "+x,Toast.LENGTH_SHORT).show();
 
-            if(x==1)
-                btnFlash(btnBlue);
-            if(x==2)
-                btnFlash(btnRed);
-            if(x==3)
-                btnFlash(btnGreen);
-            if(x==4)
-                btnFlash(btnPurple);
 
-        }
+
+
+
+
+
+
     }
     private void rndBTN()
     {
