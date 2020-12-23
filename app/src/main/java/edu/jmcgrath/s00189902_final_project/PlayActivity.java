@@ -142,7 +142,8 @@ public class PlayActivity extends AppCompatActivity implements SensorEventListen
             }
             else
             {
-
+                Intent gameOver = new Intent(view.getContext(),GameOverActivity.class);
+                startActivity(gameOver);
             }
         }
         else if(n+1 >=sequenceCount)
