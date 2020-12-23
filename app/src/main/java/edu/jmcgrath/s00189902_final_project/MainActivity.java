@@ -7,9 +7,11 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -22,33 +24,18 @@ public class MainActivity extends AppCompatActivity {
 
 
     Button btnBlue,btnRed,btnGreen,btnPurple,btn;
+    TextView score;
 
-   public static int sequenceCount=4,n=0;
+   public static int sequenceCount=4, scorev=0;
+   int n=0;
+
 
     int[] gamesSequence= new int[120];
     int arrayIndex=0;
 
 
 
-    CountDownTimer ct = new CountDownTimer((1000*sequenceCount)+2500,1500) {
-        @Override
-        public void onTick(long millisUntilFinished) {
-            rndBTN();
-        }
 
-        @Override
-        public void onFinish() {
-            for(int i =0;i< arrayIndex;i++)
-                Log.d("game sequence",String.valueOf(gamesSequence[i]));
-
-            Intent play = new Intent(view1.getContext(),PlayActivity.class);
-            play.putExtra("sequenceCount",sequenceCount);
-            play.putExtra("seqArray",gamesSequence);
-
-            startActivity(play);
-
-        }
-    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,9 +45,33 @@ public class MainActivity extends AppCompatActivity {
         btnGreen =findViewById(R.id.btnGreen);
         btnPurple = findViewById(R.id.btnPurple);
         btnRed = findViewById(R.id.btnRed);
+        score = findViewById(R.id.tvScore);
+
+        score.setText(String.valueOf(scorev));
         view1 = new View(this);
     }
+    CountDownTimer ct = new CountDownTimer((1250*sequenceCount)+2500,1500) {
+        @Override
+        public void onTick(long millisUntilFinished) {
+            Toast.makeText(view1.getContext(),String.valueOf(sequenceCount),Toast.LENGTH_SHORT).show();
+            rndBTN();
+        }
 
+        @Override
+        public void onFinish() {
+            pPressed=false;
+            for(int i =0;i< arrayIndex;i++)
+                Log.d("game sequence",String.valueOf(gamesSequence[i]));
+
+            Intent play = new Intent(view1.getContext(),PlayActivity.class);
+            play.putExtra("sequenceCount",sequenceCount);
+            play.putExtra("seqArray",gamesSequence);
+
+            play.putExtra("score",Integer.valueOf(score.getText().toString()));
+            startActivity(play);
+
+        }
+    };
 
 
     private int getRandom(int maxValue){return ((int)((Math.random()*maxValue)+1));}
@@ -102,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
     {
         n = getRandom(4);
 
-        Toast.makeText(this,"Number = "+n,Toast.LENGTH_SHORT).show();
+
 
         switch (n)
         {

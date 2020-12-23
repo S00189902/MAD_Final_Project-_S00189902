@@ -10,6 +10,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class PlayActivity extends AppCompatActivity implements SensorEventListener
@@ -17,10 +18,10 @@ public class PlayActivity extends AppCompatActivity implements SensorEventListen
 
     private final double fullPos= 5.0;
     private final double fullNeg = -5.0;
-
+    int scoreV;
     boolean highlimit = false;
 
-
+    TextView scores;
     View view;
     int sequenceCount=4,n=0;
     int[] gamesSequence= new int[120];
@@ -36,8 +37,11 @@ public class PlayActivity extends AppCompatActivity implements SensorEventListen
         btnpurple = findViewById(R.id.btnPurple);
         btngreen = findViewById(R.id.btnGreen);
         btnred = findViewById(R.id.btnRed);
+        scores = findViewById(R.id.tvScore);
         msesnorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         mSensor = msesnorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+        scoreV = getIntent().getIntExtra("score",-1);
 
         sequenceCount = getIntent().getIntExtra("sequenceCount",-1);
         gamesSequence = getIntent().getIntArrayExtra("seqArray");
@@ -138,11 +142,14 @@ public class PlayActivity extends AppCompatActivity implements SensorEventListen
         {
             if(gamesSequence[n]==value)
             {
+                scoreV++;
+                scores.setText(String.valueOf(scoreV));
                 n++;
             }
             else
             {
                 Intent gameOver = new Intent(view.getContext(),GameOverActivity.class);
+                gameOver.putExtra("score",scoreV);
                 startActivity(gameOver);
             }
         }
@@ -150,15 +157,20 @@ public class PlayActivity extends AppCompatActivity implements SensorEventListen
         {
             if(gamesSequence[n]==value)
             {
+                scoreV++;
+                scores.setText(String.valueOf(scoreV));
                 Intent start = new Intent(view.getContext(),MainActivity.class);
 
+                MainActivity.scorev = scoreV;
                 MainActivity.sequenceCount = sequenceCount+2;
                 startActivity(start);
                 finish();
             }
             else
             {
-
+                Intent gameOver = new Intent(view.getContext(),GameOverActivity.class);
+                gameOver.putExtra("score",scoreV);
+                startActivity(gameOver);
             }
         }
     }
